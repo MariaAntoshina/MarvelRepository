@@ -1,17 +1,14 @@
 import {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import Spinner from "../spinner/Spinner";
 import useMarvelService from "../../services/MarvelService";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Skeleton from "../skeleton/Skeleton";
 import './charInfo.scss';
-
+import setContent from "../../utils/setContent";
 import {IMAGE_NOT_AVAILABLE} from "../constants/messages";
 import CharSearchForm from "../charSearchForm/CharSearchForm";
 
 const CharInfo = (props) => {
     const [char, setChar] = useState(null);
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {getCharacter, clearError, process,setProcess} = useMarvelService();
 
    useEffect(() => {
        updateChar()
@@ -26,7 +23,9 @@ const CharInfo = (props) => {
 
             clearError();
             getCharacter (charId)
-            .then (onCharLoaded)
+                .then (onCharLoaded)
+                .then (() => setProcess('confirmed'))
+
 
     }
 
@@ -36,17 +35,11 @@ const CharInfo = (props) => {
 
 
 
-    const skeleton = char || loading || error ? null : <Skeleton/>;
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !char) ? <View char={char}/> : null;
+
     return (
         <div>
             <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
+                {setContent(process, View, char)}
             </div>
             <CharSearchForm/>
         </div>
@@ -54,9 +47,9 @@ const CharInfo = (props) => {
     )
 }
 
-const View  = ({char}) => {
-    const {name, description, thumbnail, homepage, wiki, comics } = char;
-    const className= char.thumbnail.includes(IMAGE_NOT_AVAILABLE) ?
+const View  = ({data}) => {
+    const {name, description, thumbnail, homepage, wiki, comics } = data;
+    const className= data.thumbnail.includes(IMAGE_NOT_AVAILABLE) ?
         "not_found" : "";
     return (
         <>
