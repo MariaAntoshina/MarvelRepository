@@ -1,7 +1,7 @@
 import {IMAGE_NOT_AVAILABLE} from "../components/constants/messages";
 import {useHttp} from '../hooks/http.hook';
 const useMarvelService = () => {
-    const {loading, request, error,clearError} = useHttp();
+    const {loading, request, error,clearError,process, setProcess} = useHttp();
 
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey = 'apikey=a27b90aaac48ab9232727bccc28abb49';
@@ -65,7 +65,7 @@ const useMarvelService = () => {
                 : "not available",
         };
     };
-    return {loading,error,clearError,getCharacterByName, getAllCharacters,getCharacter, getAllComics, getComics}
+    return {loading,error,clearError,getCharacterByName, getAllCharacters,getCharacter, getAllComics, getComics,process, setProcess}
 }
 
 
